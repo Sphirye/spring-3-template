@@ -3,7 +3,10 @@ spring:
     name: lonjas
     id: com.sphirye.springtemplate
 
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
-    url: jdbc:mysql://localhost:3308/tecnosign_db
-    username: root
-    password: 1234
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
