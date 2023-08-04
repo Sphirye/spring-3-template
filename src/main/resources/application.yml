@@ -1,6 +1,6 @@
 spring:
   application:
-    name: lonjas
+    name: springtemplate
     id: com.sphirye.springtemplate
   datasource:
     url: ${DATASOURCE_URL}
