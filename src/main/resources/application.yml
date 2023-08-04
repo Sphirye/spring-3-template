@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: lonjas
+    id: com.sphirye.springtemplate
+
+  datasource:
+    url: jdbc:mysql://localhost:3308/tecnosign_db
+    username: root
+    password: 1234
