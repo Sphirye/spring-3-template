@@ -2,14 +2,9 @@ spring:
   application:
     name: lonjas
     id: com.sphirye.springtemplate
-
-  config:
-    import: optional:file:.env[.properties]
-
   datasource:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
-
 jwt:
   secret-key: ${JWT_SECRET_KEY}
