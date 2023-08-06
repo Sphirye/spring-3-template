@@ -1,21 +1,49 @@
 package com.sphirye.springtemplate.service
 
-import com.sphirye.springtemplate.entity.User
+import com.sphirye.springtemplate.model.User
 import com.sphirye.springtemplate.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class UserService {
 
-    @Autowired lateinit var userRepository: UserRepository
+    @Autowired
+    private lateinit var userRepository: UserRepository
 
+    fun init() {
+        if (userRepository.count() == 0L) {
+            create(
+                User(email = "test@gmail.com", password = "1234")
+            )
+        }
+    }
 
+    fun create(user: User): User {
+        user.id = null
+        return userRepository.save(user)
+    }
 
     fun findById(id: Long): User {
         return userRepository.getReferenceById(id)
     }
 
-    fun existsById(id: Long): Boolean = userRepository.existsById(id)
+    fun findByEmail(email: String): User {
+        if (!existsByEmail(email)) {
+            //Todo: implement http exceptions
+            throw ResponseStatusException(HttpStatusCode.valueOf(404), "$email email not found")
+        }
+        return userRepository.findByEmail(email)
+    }
+
+    fun existsById(id: Long): Boolean {
+        return userRepository.existsById(id)
+    }
+
+    fun existsByEmail(email: String): Boolean {
+        return userRepository.existsByEmail(email)
+    }
 
 }
