@@ -12,5 +12,4 @@ class SessionManager {
         return identity.email
     }
 
-
 }
