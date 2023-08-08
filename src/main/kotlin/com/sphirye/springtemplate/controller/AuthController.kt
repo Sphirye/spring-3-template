@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 class AuthController {
 
-    @Autowired lateinit var authService: AuthService
+    @Autowired
+    private lateinit var _authService: AuthService
 
     @PostMapping("/core/auth/login")
     fun postLogin(@RequestBody credentials: UserCredentials): JwtToken {
-        return authService.login(credentials)
+        return _authService.login(credentials)
     }
+
 }
