@@ -12,46 +12,48 @@ import java.util.*
 class JwtTokenUtil {
 
     @Value("\${app.jwt.secret-key}")
-    private lateinit var jwtSecret: String
+    private lateinit var _jwtSecret: String
 
     @Value("\${spring.application.id}")
-    private lateinit var jwtIssuer: String
+    private lateinit var _jwtIssuer: String
 
-    private val signingKey: Key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret)) }
+    private val _signingKey: Key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(_jwtSecret)) }
 
     fun generateAccessToken(subject: String): String {
         val oneWeekExpirationTime = Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)
 
         return Jwts.builder()
             .setSubject(subject)
-            .setIssuer(jwtIssuer)
+            .setIssuer(_jwtIssuer)
             .setIssuedAt(Date())
             .setExpiration(oneWeekExpirationTime)
-            .signWith(signingKey, SignatureAlgorithm.HS512)
+            .signWith(_signingKey, SignatureAlgorithm.HS512)
             .compact()
     }
 
     fun getSubject(token: String): String {
         val claims = Jwts.parserBuilder()
-            .setSigningKey(signingKey)
+            .setSigningKey(_signingKey)
             .build()
             .parseClaimsJws(token)
             .body
+
         return claims.subject
     }
 
     fun getExpirationDate(token: String): Date {
         val claims = Jwts.parserBuilder()
-            .setSigningKey(signingKey)
+            .setSigningKey(_signingKey)
             .build()
             .parseClaimsJws(token)
             .body
+
         return claims.expiration
     }
 
     fun validate(token: String) {
         Jwts.parserBuilder()
-            .setSigningKey(signingKey)
+            .setSigningKey(_signingKey)
             .build()
             .parseClaimsJws(token)
     }
