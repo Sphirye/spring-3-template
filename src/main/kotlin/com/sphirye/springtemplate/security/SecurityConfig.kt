@@ -22,26 +22,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig {
 
     @Autowired
-    lateinit var customUserDetailsService: CustomUserDetailsService
+    private lateinit var _customUserDetailsService: CustomUserDetailsService
 
     @Autowired
-    lateinit var jwtTokenFilter: JwtTokenFilter
+    private lateinit var _jwtTokenFilter: JwtTokenFilter
 
     @Bean
+    @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-
-        val httpRef = http
-
+        return http
             .cors(withDefaults())
             .csrf { csrf -> csrf.disable() }
-
-
-            // Set session management to stateless
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
 
-            // Set unauthorized requests exception handler
+            .headers { header ->
+                header.frameOptions { frameOption -> frameOption.sameOrigin() }
+            }
+
             .exceptionHandling { exceptionHandling ->
                 exceptionHandling.authenticationEntryPoint { _, response, ex ->
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.message)
+                }
+
+                exceptionHandling.accessDeniedHandler { _, response, ex ->
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.message)
                 }
             }
@@ -52,12 +55,9 @@ class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/core/auth/**").permitAll()
                     .anyRequest().authenticated()
             }
-            .httpBasic(withDefaults())
 
-            // Add JWT token filter
-            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
-
-        return httpRef.build()
+            .addFilterBefore(_jwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .build()
     }
 
     @Bean
@@ -71,6 +71,6 @@ class SecurityConfig {
 
     @Bean
     fun authenticationManager(): AuthenticationManager {
-        return CustomAuthenticationManager(customUserDetailsService)
+        return CustomAuthenticationManager(_customUserDetailsService)
     }
 }
