@@ -12,16 +12,12 @@ class CustomAuthenticationManager(private val customUserDetailsService: CustomUs
 
     override fun authenticate(authentication: Authentication): Authentication {
         val userIdentity = authentication.principal as UserIdentity
+        val userDetails = customUserDetailsService.loadUserByUsername(userIdentity.email)
 
-        return try {
-            val userDetails = customUserDetailsService.loadUserByUsername(userIdentity.email)
-            createSuccessfulAuthentication(authentication, userDetails, userIdentity)
-        } catch (exception: UsernameNotFoundException) {
-            throw BadCredentialsException("invalid login details")
-        }
+        return _createSuccessfulAuthentication(authentication, userDetails, userIdentity)
     }
 
-    private fun createSuccessfulAuthentication(
+    private fun _createSuccessfulAuthentication(
         authentication: Authentication,
         user: UserDetails,
         userIdentityModel: UserIdentity
