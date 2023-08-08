@@ -55,4 +55,12 @@ class JwtTokenUtil {
             .build()
             .parseClaimsJws(token)
     }
+
+    fun resolveTokenFrom(jwtBearer: String): String {
+        return jwtBearer
+            .split(" ".toRegex())
+            .dropLastWhile { it.isEmpty() }
+            .toTypedArray()[1]
+            .trim { it <= ' ' }
+    }
 }
