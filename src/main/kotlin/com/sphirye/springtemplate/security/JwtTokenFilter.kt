@@ -1,8 +1,8 @@
 package com.sphirye.springtemplate.security
 
 import com.sphirye.springtemplate.model.UserIdentity
-import com.sphirye.springtemplate.repository.UserRepository
 import com.sphirye.springtemplate.security.util.JwtTokenUtil
+import com.sphirye.springtemplate.service.UserService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
@@ -20,31 +20,33 @@ import java.io.IOException
 @Component
 class JwtTokenFilter: OncePerRequestFilter() {
 
-    @Autowired lateinit var jwtTokenUtil: JwtTokenUtil
-    @Autowired lateinit var userRepository: UserRepository
+    @Autowired
+    private lateinit var _jwtTokenUtil: JwtTokenUtil
+
+    @Autowired
+    private lateinit var _userService: UserService
 
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-        val authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
 
-        if (authorizationHeader == null || authorizationHeader.isEmpty() || !authorizationHeader.startsWith("Bearer ")) {
+        val jwtBearer = request.getHeader(HttpHeaders.AUTHORIZATION)
+
+        if (jwtBearer == null || jwtBearer.isEmpty() || !jwtBearer.startsWith("Bearer ")) {
             chain.doFilter(request, response)
-            return
         }
 
-        val jwtToken = authorizationHeader.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].trim { it <= ' ' }
+        val token = _jwtTokenUtil.resolveTokenFrom(jwtBearer)
 
-        jwtTokenUtil.validate(jwtToken)
+        _jwtTokenUtil.validate(token)
 
-        val user = userRepository.getReferenceById(jwtTokenUtil.getSubject(jwtToken).toLong())
+        val user = _userService.findById(_jwtTokenUtil.getSubject(token).toLong())
 
-        val authentication = UsernamePasswordAuthenticationToken(
+        val auth = UsernamePasswordAuthenticationToken(
             UserIdentity(email = user.email!!, id = user.id!!), user.password
         )
 
-        authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
-
-        SecurityContextHolder.getContext().authentication = authentication
+        auth.details = WebAuthenticationDetailsSource().buildDetails(request)
+        SecurityContextHolder.getContext().authentication = auth
 
         chain.doFilter(request, response)
     }
