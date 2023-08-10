@@ -33,12 +33,12 @@ class AuthService {
             throw BadCredentialsException("Bad credentials")
         }
 
-        authenticationManager.authenticate(
+        val auth = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 UserIdentity(email = user.email!!, user.id!!), user.password, listOf()
             )
         )
 
-        return JwtToken(token = jwtTokenUtil.generateAccessToken(user.id.toString()))
+        return JwtToken(token = jwtTokenUtil.generateAccessToken(auth))
     }
 }

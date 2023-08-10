@@ -1,6 +1,5 @@
 package com.sphirye.springtemplate.security
 
-import com.sphirye.springtemplate.model.UserIdentity
 import com.sphirye.springtemplate.security.util.JwtTokenUtil
 import com.sphirye.springtemplate.service.UserService
 import jakarta.servlet.FilterChain
@@ -8,7 +7,7 @@ import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -29,26 +28,44 @@ class JwtTokenFilter: OncePerRequestFilter() {
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
 
-        val jwtBearer = request.getHeader(HttpHeaders.AUTHORIZATION)
+        val token = resolveToken(request)
 
-        if (jwtBearer == null || jwtBearer.isEmpty() || !jwtBearer.startsWith("Bearer ")) {
+        if (token == null) {
             chain.doFilter(request, response)
             return
         }
 
-        val token = _jwtTokenUtil.resolveTokenFrom(jwtBearer)
-
-        _jwtTokenUtil.validate(token)
-
-        val user = _userService.findById(_jwtTokenUtil.getSubject(token).toLong())
-
-        val auth = UsernamePasswordAuthenticationToken(
-            UserIdentity(email = user.email!!, id = user.id!!), user.password
-        )
-
-        auth.details = WebAuthenticationDetailsSource().buildDetails(request)
-        SecurityContextHolder.getContext().authentication = auth
+        if (_jwtTokenUtil.validate(token)) {
+            try {
+                val details = _jwtTokenUtil.resolveUserDetailsFromToken(token)
+                val user = _userService.findById(details!!.id!!)
+                val auth = UsernamePasswordAuthenticationToken(user.email, user.password, null)
+                auth.details = WebAuthenticationDetailsSource().buildDetails(request)
+                SecurityContextHolder.getContext().authentication = auth
+            } catch (ex: CustomException) {
+                SecurityContextHolder.clearContext()
+                response.sendError(ex.httpStatus.value(), ex.message)
+                return
+            }
+        }
 
         chain.doFilter(request, response)
+    }
+
+    fun resolveToken(request: HttpServletRequest): String? {
+        val authHeader = request.getHeader("Authorization")
+        if (authHeader.isNullOrEmpty()) { return null }
+
+        return authHeader
+            .split(" ".toRegex())
+            .dropLastWhile { it.isEmpty() }
+            .toTypedArray()[1]
+            .trim { it <= ' ' }
+    }
+
+    class CustomException(override val message: String, val httpStatus: HttpStatus) : RuntimeException() {
+        companion object {
+            private const val serialVersionUID = 1L
+        }
     }
 }
