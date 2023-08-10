@@ -4,9 +4,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.Customizer.withDefaults
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -16,8 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
+
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig {
 
@@ -31,13 +30,12 @@ class SecurityConfig {
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
-            .cors(withDefaults())
-            .csrf { csrf -> csrf.disable() }
-            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
 
-            .headers { header ->
-                header.frameOptions { frameOption -> frameOption.sameOrigin() }
-            }
+            .cors { it.disable() }
+            .csrf { it.disable() }
+            .logout { it.disable() }
+            .headers { it.frameOptions { frameOption -> frameOption.sameOrigin() } }
+            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
 
             .exceptionHandling { exceptionHandling ->
                 exceptionHandling.authenticationEntryPoint { _, response, ex ->
@@ -49,10 +47,11 @@ class SecurityConfig {
                 }
             }
 
+            .securityMatcher(*getIgnoringPattern())
             // TODO: Fix authorization
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers(HttpMethod.POST, "/core/auth/**").permitAll()
+                    .requestMatchers("/auth/login").permitAll()
                     .anyRequest().authenticated()
             }
 
@@ -67,6 +66,11 @@ class SecurityConfig {
                 return rawPassword == encodedPassword
             }
         }
+    }
+
+    private fun getIgnoringPattern(): Array<String> {
+        val pattern: MutableList<String> = ArrayList(listOf("/favicon.ico", "/health.html", "/robots.txt", "/error"))
+        return pattern.toTypedArray<String>()
     }
 
     @Bean

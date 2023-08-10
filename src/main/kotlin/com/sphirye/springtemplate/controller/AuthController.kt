@@ -14,7 +14,7 @@ class AuthController {
     @Autowired
     private lateinit var _authService: AuthService
 
-    @PostMapping("/core/auth/login")
+    @PostMapping("/auth/login")
     fun postLogin(@RequestBody credentials: UserCredentials): JwtToken {
         return _authService.login(credentials)
     }
