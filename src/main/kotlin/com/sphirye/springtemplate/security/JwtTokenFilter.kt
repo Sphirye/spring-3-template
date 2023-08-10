@@ -33,6 +33,7 @@ class JwtTokenFilter: OncePerRequestFilter() {
 
         if (jwtBearer == null || jwtBearer.isEmpty() || !jwtBearer.startsWith("Bearer ")) {
             chain.doFilter(request, response)
+            return
         }
 
         val token = _jwtTokenUtil.resolveTokenFrom(jwtBearer)
