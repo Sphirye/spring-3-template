@@ -1,6 +1,5 @@
 package com.sphirye.springtemplate.model
 
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
@@ -16,12 +15,21 @@ data class CustomUserDetails (
     private val credentialsExpiredYn = false
     private val enabledYn = true
 
-    override fun getUsername(): String? { return username }
-    override fun getPassword(): String? { return password }
-    override fun getAuthorities(): Collection<GrantedAuthority?>? { return authorities }
-    override fun isAccountNonExpired(): Boolean { return !accountExpiredYn }
-    override fun isAccountNonLocked(): Boolean { return !accountLockedYn }
-    override fun isCredentialsNonExpired(): Boolean { return !credentialsExpiredYn }
-    override fun isEnabled(): Boolean { return enabledYn }
-    fun toCustomUserTokenDetails(): CustomUserTokenDetails { return CustomUserTokenDetails(id, email, authorities) }
+    override fun getUsername() = username
+
+    override fun getPassword() = password
+
+    override fun getAuthorities() = authorities
+
+    override fun isAccountNonExpired() = !accountExpiredYn
+
+    override fun isAccountNonLocked() = !accountLockedYn
+
+    override fun isCredentialsNonExpired() = !credentialsExpiredYn
+
+    override fun isEnabled() = enabledYn
+
+    fun toCustomUserTokenDetails(): CustomUserTokenDetails {
+        return CustomUserTokenDetails(id, email, authorities)
+    }
 }
