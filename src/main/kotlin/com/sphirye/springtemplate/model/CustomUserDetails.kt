@@ -1,7 +1,5 @@
 package com.sphirye.springtemplate.model
 
-import com.nimbusds.jose.shaded.gson.annotations.JsonAdapter
-import com.sphirye.springtemplate.security.util.SimpleGrantedAuthorityUtil
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -13,7 +11,6 @@ data class CustomUserDetails (
     private val password: String?,
     private val authorities: Collection<SimpleGrantedAuthority>?
 ) : UserDetails {
-
     private val accountExpiredYn = false
     private val accountLockedYn = false
     private val credentialsExpiredYn = false
@@ -28,10 +25,3 @@ data class CustomUserDetails (
     override fun isEnabled(): Boolean { return enabledYn }
     fun toCustomUserTokenDetails(): CustomUserTokenDetails { return CustomUserTokenDetails(id, email, authorities) }
 }
-
-class CustomUserTokenDetails(
-    val id: Long?,
-    val email: String?,
-    @JsonAdapter(SimpleGrantedAuthorityUtil::class)
-    val authorities: Collection<SimpleGrantedAuthority>?
-)
