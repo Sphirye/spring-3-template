@@ -35,19 +35,13 @@ class JwtTokenFilter: OncePerRequestFilter() {
             return
         }
 
-        if (_jwtTokenUtil.validate(token)) {
-            try {
-                val details = _jwtTokenUtil.resolveUserDetailsFromToken(token)
-                val user = _userService.findById(details!!.id!!)
-                val auth = UsernamePasswordAuthenticationToken(user.email, user.password, null)
-                auth.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = auth
-            } catch (ex: CustomException) {
-                SecurityContextHolder.clearContext()
-                response.sendError(ex.httpStatus.value(), ex.message)
-                return
-            }
-        }
+        _jwtTokenUtil.validate(token)
+
+        val details = _jwtTokenUtil.resolveUserDetailsFromToken(token)
+        val user = _userService.findById(details!!.id!!)
+        val auth = UsernamePasswordAuthenticationToken(user.email, user.password, null)
+        auth.details = WebAuthenticationDetailsSource().buildDetails(request)
+        SecurityContextHolder.getContext().authentication = auth
 
         chain.doFilter(request, response)
     }

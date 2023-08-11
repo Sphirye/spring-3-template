@@ -58,20 +58,11 @@ class JwtTokenUtil {
         return claims.expiration
     }
 
-    fun validate(token: String): Boolean {
-        try {
-            Jwts.parserBuilder()
-                .setSigningKey(_signingKey)
-                .build()
-                .parseClaimsJws(token)
-            return true
-        }
-        catch (e: SecurityException) { logger!!.error("Invalid JWT signature.") }
-        catch (e: MalformedJwtException) { logger!!.error("Invalid JWT signature.") }
-        catch (e: ExpiredJwtException) { logger!!.error("Expired JWT token.") }
-        catch (e: UnsupportedJwtException) { logger!!.error("Unsupported JWT token.") }
-        catch (e: IllegalArgumentException) { logger!!.error("Invalid JWT token.") }
-        return false
+    fun validate(token: String) {
+        Jwts.parserBuilder()
+            .setSigningKey(_signingKey)
+            .build()
+            .parseClaimsJws(token)
     }
 
     fun resolveUserDetailsFromToken(token: String): CustomUserTokenDetails? {
