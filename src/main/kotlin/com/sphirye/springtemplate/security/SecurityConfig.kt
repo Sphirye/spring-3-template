@@ -47,10 +47,9 @@ class SecurityConfig {
                 }
             }
 
-            .securityMatcher(*getIgnoringPattern())
-            // TODO: Fix authorization
             .authorizeHttpRequests { authz ->
                 authz
+                    .requestMatchers("/error").permitAll()
                     .requestMatchers("/auth/login").permitAll()
                     .anyRequest().authenticated()
             }
@@ -66,11 +65,6 @@ class SecurityConfig {
                 return rawPassword == encodedPassword
             }
         }
-    }
-
-    private fun getIgnoringPattern(): Array<String> {
-        val pattern: MutableList<String> = ArrayList(listOf("/favicon.ico", "/health.html", "/robots.txt", "/error"))
-        return pattern.toTypedArray<String>()
     }
 
     @Bean
