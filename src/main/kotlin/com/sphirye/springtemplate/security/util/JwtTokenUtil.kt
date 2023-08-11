@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 import java.security.Key
 import java.util.*
@@ -25,14 +24,13 @@ class JwtTokenUtil {
     private val logger: Logger? = LogManager.getLogger()
     private val _signingKey: Key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(_jwtSecret)) }
 
-    fun generateAccessToken(authentication: Authentication): String {
+    fun generateAccessToken(customUserTokenDetails: CustomUserTokenDetails): String {
         val oneWeekExpirationTime = Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)
 
         return Jwts.builder()
-            .setSubject(authentication.principal.toString())
+            .setSubject(customUserTokenDetails.id.toString())
             .setIssuer(_jwtIssuer)
             .setIssuedAt(Date())
-            .claim("details", authentication.details)
             .setExpiration(oneWeekExpirationTime)
             .signWith(_signingKey, SignatureAlgorithm.HS512)
             .compact()
@@ -44,8 +42,7 @@ class JwtTokenUtil {
             .build()
             .parseClaimsJws(token)
             .body
-
-        return claims.subject
+            .subject
     }
 
     fun getExpirationDate(token: String): Date {

@@ -1,5 +1,6 @@
 package com.sphirye.springtemplate.service
 
+import com.sphirye.springtemplate.model.CustomUserTokenDetails
 import com.sphirye.springtemplate.model.JwtToken
 import com.sphirye.springtemplate.model.UserCredentials
 import com.sphirye.springtemplate.model.UserIdentity
@@ -39,6 +40,6 @@ class AuthService {
             )
         )
 
-        return JwtToken(token = jwtTokenUtil.generateAccessToken(auth))
+        return JwtToken(token = jwtTokenUtil.generateAccessToken(auth.details as CustomUserTokenDetails))
     }
 }
