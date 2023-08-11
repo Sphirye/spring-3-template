@@ -38,8 +38,8 @@ class JwtTokenUtil {
             .compact()
     }
 
-    fun getSubject(token: String): String {
-        val claims = Jwts.parserBuilder()
+    fun resolveSubject(token: String): String {
+        return Jwts.parserBuilder()
             .setSigningKey(_signingKey)
             .build()
             .parseClaimsJws(token)
