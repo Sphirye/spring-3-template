@@ -1,6 +1,5 @@
 package com.sphirye.springtemplate.service
 
-import com.sphirye.springtemplate.model.CustomUserTokenDetails
 import com.sphirye.springtemplate.model.JwtToken
 import com.sphirye.springtemplate.model.UserCredentials
 import com.sphirye.springtemplate.model.UserIdentity
@@ -34,12 +33,12 @@ class AuthService {
             throw BadCredentialsException("Bad credentials")
         }
 
+        val userIdentity = UserIdentity(email = user.email!!, user.id!!)
+
         val auth = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                UserIdentity(email = user.email!!, user.id!!), user.password, listOf()
-            )
+            UsernamePasswordAuthenticationToken(userIdentity, user.password, listOf())
         )
 
-        return JwtToken(token = jwtTokenUtil.generateAccessToken(auth.details as CustomUserTokenDetails))
+        return JwtToken(token = jwtTokenUtil.generateAccessToken(userIdentity.id))
     }
 }

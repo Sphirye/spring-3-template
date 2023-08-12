@@ -24,11 +24,11 @@ class JwtTokenUtil {
     private val logger: Logger? = LogManager.getLogger()
     private val _signingKey: Key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(_jwtSecret)) }
 
-    fun generateAccessToken(customUserTokenDetails: CustomUserTokenDetails): String {
+    fun generateAccessToken(userId: Long): String {
         val oneWeekExpirationTime = Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)
 
         return Jwts.builder()
-            .setSubject(customUserTokenDetails.id.toString())
+            .setSubject(userId.toString())
             .setIssuer(_jwtIssuer)
             .setIssuedAt(Date())
             .setExpiration(oneWeekExpirationTime)
