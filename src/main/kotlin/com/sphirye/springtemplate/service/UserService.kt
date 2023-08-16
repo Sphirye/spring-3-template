@@ -11,15 +11,7 @@ import org.springframework.web.server.ResponseStatusException
 class UserService {
 
     @Autowired
-    private lateinit var userRepository: UserRepository
-
-    fun init() {
-        if (userRepository.count() == 0L) {
-            create(
-                User(email = "test@gmail.com", password = "1234")
-            )
-        }
-    }
+    private lateinit var _userRepository: UserRepository
 
     fun create(user: User): User {
         user.id = null
