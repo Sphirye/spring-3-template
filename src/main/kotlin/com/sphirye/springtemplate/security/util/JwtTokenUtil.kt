@@ -1,12 +1,8 @@
 package com.sphirye.springtemplate.security.util
 
-import com.nimbusds.jose.shaded.gson.Gson
-import com.sphirye.springtemplate.model.CustomUserTokenDetails
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.security.Key
