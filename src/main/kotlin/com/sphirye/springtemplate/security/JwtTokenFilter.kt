@@ -27,7 +27,7 @@ class JwtTokenFilter: OncePerRequestFilter() {
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
 
-        val token = resolveToken(request)
+        val token = _resolveToken(request)
 
         if (token == null) {
             chain.doFilter(request, response)
@@ -44,7 +44,7 @@ class JwtTokenFilter: OncePerRequestFilter() {
         chain.doFilter(request, response)
     }
 
-    fun resolveToken(request: HttpServletRequest): String? {
+    private fun _resolveToken(request: HttpServletRequest): String? {
         val authHeader = request.getHeader("Authorization")
         if (authHeader.isNullOrEmpty()) { return null }
 

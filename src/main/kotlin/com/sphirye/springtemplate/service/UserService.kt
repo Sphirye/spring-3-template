@@ -15,11 +15,11 @@ class UserService {
 
     fun create(user: User): User {
         user.id = null
-        return userRepository.save(user)
+        return _userRepository.save(user)
     }
 
     fun findById(id: Long): User {
-        return userRepository.getReferenceById(id)
+        return _userRepository.getReferenceById(id)
     }
 
     fun findByEmail(email: String): User {
@@ -27,15 +27,15 @@ class UserService {
             //Todo: implement http exceptions
             throw ResponseStatusException(HttpStatusCode.valueOf(404), "$email email not found")
         }
-        return userRepository.findByEmail(email)
+        return _userRepository.findByEmail(email)
     }
 
     fun existsById(id: Long): Boolean {
-        return userRepository.existsById(id)
+        return _userRepository.existsById(id)
     }
 
     fun existsByEmail(email: String): Boolean {
-        return userRepository.existsByEmail(email)
+        return _userRepository.existsByEmail(email)
     }
 
 }

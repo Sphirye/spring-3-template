@@ -15,30 +15,30 @@ import org.springframework.stereotype.Service
 class AuthService {
 
     @Autowired
-    private lateinit var userService: UserService
+    private lateinit var _userService: UserService
 
     @Autowired
-    private lateinit var authenticationManager: AuthenticationManager
+    private lateinit var _authenticationManager: AuthenticationManager
 
     @Autowired
-    private lateinit var passwordEncoder: PasswordEncoder
+    private lateinit var _passwordEncoder: PasswordEncoder
 
     @Autowired
-    private lateinit var jwtTokenUtil: JwtTokenUtil
+    private lateinit var _jwtTokenUtil: JwtTokenUtil
 
     fun login(credentials: UserCredentials): JwtToken {
-        val user = userService.findByEmail(credentials.email)
+        val user = _userService.findByEmail(credentials.email)
 
-        if (!passwordEncoder.matches(credentials.password, user.password)) {
+        if (!_passwordEncoder.matches(credentials.password, user.password)) {
             throw BadCredentialsException("Bad credentials")
         }
 
         val userIdentity = UserIdentity(email = user.email!!, user.id!!)
 
-        val auth = authenticationManager.authenticate(
+        val auth = _authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(userIdentity, user.password, listOf())
         )
 
-        return JwtToken(token = jwtTokenUtil.generateAccessToken(userIdentity.id))
+        return JwtToken(token = _jwtTokenUtil.generateAccessToken(userIdentity.id))
     }
 }

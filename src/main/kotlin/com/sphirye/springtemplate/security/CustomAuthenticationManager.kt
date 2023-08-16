@@ -7,12 +7,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 
-class CustomAuthenticationManager(private val customUserDetailsService: CustomUserDetailsService): AuthenticationManager {
+class CustomAuthenticationManager(private val _customUserDetailsService: CustomUserDetailsService): AuthenticationManager {
 
     override fun authenticate(authentication: Authentication): Authentication {
 
         val userIdentity = authentication.principal as UserIdentity
-        val userDetails = customUserDetailsService.loadUserByUsername(userIdentity.email)
+        val userDetails = _customUserDetailsService.loadUserByUsername(userIdentity.email)
 
         val customUserDetails = CustomUserDetails(
             id = userIdentity.id,
