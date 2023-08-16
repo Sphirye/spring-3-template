@@ -21,7 +21,6 @@ class JwtTokenUtil {
     @Value("\${spring.application.id}")
     private lateinit var _jwtIssuer: String
 
-    private val logger: Logger? = LogManager.getLogger()
     private val _signingKey: Key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(_jwtSecret)) }
 
     fun generateAccessToken(userId: Long): String {
@@ -60,17 +59,6 @@ class JwtTokenUtil {
             .setSigningKey(_signingKey)
             .build()
             .parseClaimsJws(token)
-    }
-
-    fun resolveUserDetailsFromToken(token: String): CustomUserTokenDetails? {
-        val claim = Jwts.parserBuilder()
-            .setSigningKey(_signingKey)
-            .build()
-            .parseClaimsJws(token)
-            .body["details"]
-
-        return if (claim != null) { Gson().fromJson(claim.toString(), CustomUserTokenDetails::class.java) }
-        else { null }
     }
 
 }

@@ -28,8 +28,4 @@ data class CustomUserDetails (
     override fun isCredentialsNonExpired() = !credentialsExpiredYn
 
     override fun isEnabled() = enabledYn
-
-    fun toCustomUserTokenDetails(): CustomUserTokenDetails {
-        return CustomUserTokenDetails(id, email, authorities)
-    }
 }

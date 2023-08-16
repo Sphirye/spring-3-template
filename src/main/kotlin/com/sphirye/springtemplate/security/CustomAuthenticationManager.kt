@@ -29,7 +29,6 @@ class CustomAuthenticationManager(private val customUserDetailsService: CustomUs
 
     private fun _createSuccessfulAuthentication(authentication: Authentication, userDetails: CustomUserDetails): Authentication {
         val token = UsernamePasswordAuthenticationToken(userDetails.username, authentication.credentials, userDetails.authorities)
-        token.details = userDetails.toCustomUserTokenDetails()
         return token
     }
 
