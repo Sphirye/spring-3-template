@@ -46,7 +46,10 @@ class JwtTokenFilter: OncePerRequestFilter() {
 
     private fun _resolveToken(request: HttpServletRequest): String? {
         val authHeader = request.getHeader("Authorization")
-        if (authHeader.isNullOrEmpty()) { return null }
+
+        if (authHeader.isNullOrEmpty()) {
+            return null
+        }
 
         return authHeader
             .split(" ".toRegex())
