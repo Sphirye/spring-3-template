@@ -12,5 +12,8 @@ class User(
 
     var email: String? = null,
 
-    var password: String? = null
+    var password: String? = null,
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    var authorities: MutableSet<Authority> = mutableSetOf(),
 )
