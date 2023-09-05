@@ -19,7 +19,7 @@ class CustomAuthenticationManager(private val _customUserDetailsService: CustomU
             username = userDetails.username,
             email = userDetails.username,
             password = userDetails.password,
-            authorities = userDetails.authorities
+            authorities = null
         )
 
         val successfulAuthentication = _createSuccessfulAuthentication(authentication, customUserDetails)
