@@ -26,7 +26,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+	//DATABASE
 	runtimeOnly("com.h2database:h2")
+	runtimeOnly("mysql:mysql-connector-java:8.0.33")
 
 	//JWT
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
