@@ -11,6 +11,13 @@ class AuthorityService {
     @Autowired
     private lateinit var _authorityRepository: AuthorityRepository
 
+    @Autowired
+    private lateinit var _userService: UserService
+
+    fun create(authority: Authority): Authority {
+        return _authorityRepository.save(authority)
+    }
+
     fun findByRole(role: Authority.Role): Authority {
         return _authorityRepository.getReferenceById(role)
     }
