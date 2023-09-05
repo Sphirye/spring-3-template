@@ -15,12 +15,12 @@ class Authority (
 
     @JsonIgnore
     @ManyToMany
-    var users: MutableList<User>? = null,
+    var users: MutableSet<User>? = mutableSetOf(),
 
     @Column(nullable = false)
     var enabled: Boolean,
 
-) {
+    ) {
     enum class Role {
         SUPER_ADMIN, ADMIN, MOD
     }
