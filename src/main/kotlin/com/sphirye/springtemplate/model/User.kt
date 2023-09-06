@@ -5,7 +5,8 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "`USER`")
 class User(
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue
     var id: Long? = null,
 
     var username: String? = null,
