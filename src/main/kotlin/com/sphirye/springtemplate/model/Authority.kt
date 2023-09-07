@@ -15,7 +15,12 @@ class Authority (
 
     @JsonIgnore
     @ManyToMany
-    var users: MutableSet<User>? = mutableSetOf(),
+    @JoinTable(
+        name = "rel_user_authority",
+        joinColumns = [JoinColumn(name = "authority_role", referencedColumnName = "role")],
+        inverseJoinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")]
+    )
+    var users: MutableSet<User> = mutableSetOf(),
 
     @Column(nullable = false)
     var enabled: Boolean,

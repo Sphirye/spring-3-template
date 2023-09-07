@@ -3,7 +3,7 @@ package com.sphirye.springtemplate.model
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "`USER`")
+@Table(name = "_user")
 class User(
     @Id
     @GeneratedValue
