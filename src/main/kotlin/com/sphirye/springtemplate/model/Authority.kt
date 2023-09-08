@@ -2,6 +2,7 @@ package com.sphirye.springtemplate.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @Entity
 class Authority (
@@ -23,5 +24,11 @@ class Authority (
     ) {
     enum class Role {
         SUPER_ADMIN, ADMIN, MOD
+    }
+
+    companion object {
+        fun getSimpleGrantedAuthorities(authorities: MutableSet<Authority>): List<SimpleGrantedAuthority> {
+            return authorities.map { it.role.toString() }.map { SimpleGrantedAuthority(it) }
+        }
     }
 }
