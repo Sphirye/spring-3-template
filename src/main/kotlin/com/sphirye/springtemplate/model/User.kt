@@ -15,6 +15,11 @@ class User(
 
     var password: String? = null,
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "rel_user_authority",
+        inverseJoinColumns = [JoinColumn(name = "authority_role", referencedColumnName = "role")],
+        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")]
+    )
     var authorities: MutableSet<Authority> = mutableSetOf(),
 )

@@ -14,16 +14,11 @@ class Authority (
     var description: String? = null,
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-        name = "rel_user_authority",
-        joinColumns = [JoinColumn(name = "authority_role", referencedColumnName = "role")],
-        inverseJoinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")]
-    )
+    @ManyToMany(mappedBy = "authorities")
     var users: MutableSet<User> = mutableSetOf(),
 
     @Column(nullable = false)
-    var enabled: Boolean,
+    var enabled: Boolean? = true,
 
     ) {
     enum class Role {
