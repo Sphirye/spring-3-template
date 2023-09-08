@@ -1,6 +1,7 @@
 package com.sphirye.springtemplate.model
 
 import jakarta.persistence.*
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @Entity
 @Table(name = "_user")
@@ -22,4 +23,10 @@ class User(
         joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")]
     )
     var authorities: MutableSet<Authority> = mutableSetOf(),
-)
+) {
+
+    fun getSimpleGrantedAuthorities(): List<SimpleGrantedAuthority> {
+        return authorities.map { it.role.toString() }.map { SimpleGrantedAuthority(it) }
+    }
+
+}
