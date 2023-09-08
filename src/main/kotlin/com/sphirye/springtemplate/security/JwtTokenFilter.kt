@@ -37,7 +37,12 @@ class JwtTokenFilter: OncePerRequestFilter() {
         _jwtTokenUtil.validate(token)
 
         val user = _userService.findById(_jwtTokenUtil.resolveSubject(token).toLong())
-        val auth = UsernamePasswordAuthenticationToken(user.email, user.password, null)
+        val auth = UsernamePasswordAuthenticationToken(
+            user.email,
+            user.password,
+            user.getSimpleGrantedAuthorities()
+        )
+
         auth.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = auth
 

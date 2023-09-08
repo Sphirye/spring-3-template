@@ -19,6 +19,6 @@ class CustomUserDetailsService : UserDetailsService {
     }
 
     private fun _createUserDetails(user: com.sphirye.springtemplate.model.User): User {
-        return User(user.email, user.password, listOf())
+        return User(user.email, user.password, user.getSimpleGrantedAuthorities())
     }
 }
