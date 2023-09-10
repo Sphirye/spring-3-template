@@ -1,6 +1,5 @@
 package com.sphirye.springtemplate.security
 
-import com.sphirye.springtemplate.model.UserIdentity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
@@ -8,8 +7,11 @@ import org.springframework.stereotype.Service
 class SessionManager {
 
     fun getUserEmail(): String {
-        val identity = SecurityContextHolder.getContext().authentication.principal as UserIdentity
-        return identity.email
+        return SecurityContextHolder.getContext().authentication.principal.toString()
+    }
+
+    fun getUserAuthorities(): Any? {
+        return SecurityContextHolder.getContext().authentication.authorities
     }
 
 }

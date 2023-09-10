@@ -1,5 +1,6 @@
 package com.sphirye.springtemplate.security
 
+import com.sphirye.springtemplate.model.Authority
 import com.sphirye.springtemplate.security.util.JwtTokenUtil
 import com.sphirye.springtemplate.service.UserService
 import jakarta.servlet.FilterChain
@@ -37,7 +38,12 @@ class JwtTokenFilter: OncePerRequestFilter() {
         _jwtTokenUtil.validate(token)
 
         val user = _userService.findById(_jwtTokenUtil.resolveSubject(token).toLong())
-        val auth = UsernamePasswordAuthenticationToken(user.email, user.password, null)
+        val auth = UsernamePasswordAuthenticationToken(
+            user.email,
+            user.password,
+            Authority.getSimpleGrantedAuthoritiesFrom(user.authorities)
+        )
+
         auth.details = WebAuthenticationDetailsSource().buildDetails(request)
         SecurityContextHolder.getContext().authentication = auth
 

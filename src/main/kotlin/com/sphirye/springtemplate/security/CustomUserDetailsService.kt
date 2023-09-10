@@ -1,5 +1,6 @@
 package com.sphirye.springtemplate.security
 
+import com.sphirye.springtemplate.model.Authority
 import com.sphirye.springtemplate.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
@@ -19,6 +20,6 @@ class CustomUserDetailsService : UserDetailsService {
     }
 
     private fun _createUserDetails(user: com.sphirye.springtemplate.model.User): User {
-        return User(user.email, user.password, listOf())
+        return User(user.email, user.password, Authority.getSimpleGrantedAuthoritiesFrom(user.authorities))
     }
 }
