@@ -27,7 +27,7 @@ class Authority (
     }
 
     companion object {
-        fun getSimpleGrantedAuthorities(authorities: MutableSet<Authority>): List<SimpleGrantedAuthority> {
+        fun getSimpleGrantedAuthoritiesFrom(authorities: MutableSet<Authority>): List<SimpleGrantedAuthority> {
             return authorities.map { it.role.toString() }.map { SimpleGrantedAuthority(it) }
         }
     }
