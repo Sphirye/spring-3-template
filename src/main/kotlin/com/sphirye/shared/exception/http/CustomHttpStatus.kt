@@ -1,4 +1,4 @@
-Apackage com.sphirye.shared.exception.http
+package com.sphirye.shared.exception.http
 
 enum class CustomHttpStatus(val value: Int) {
 
