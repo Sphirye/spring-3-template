@@ -1,5 +1,6 @@
 package com.sphirye.springtemplate.model
 
+import com.sphirye.shared.utils.Identifiable
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Min
@@ -10,7 +11,7 @@ import jakarta.validation.constraints.NotNull
 class User(
     @Id
     @GeneratedValue
-    var id: Long? = null,
+    override var id: Long? = null,
 
     @field:NotNull
     var username: String? = null,
@@ -30,4 +31,4 @@ class User(
         joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")]
     )
     var authorities: MutableSet<Authority> = mutableSetOf(),
-)
+): Identifiable<Long>
