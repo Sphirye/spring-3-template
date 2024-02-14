@@ -1,6 +1,7 @@
 package com.sphirye.springtemplate.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.sphirye.shared.utils.Identifiable
 import jakarta.persistence.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
@@ -10,7 +11,7 @@ class Authority (
     @Id
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var role: Role,
+    override var id: Role?,
 
     var description: String? = null,
 
@@ -21,14 +22,14 @@ class Authority (
     @Column(nullable = false)
     var enabled: Boolean? = true,
 
-    ) {
+    ): Identifiable<Authority.Role> {
     enum class Role {
         SUPER_ADMIN, ADMIN, MOD
     }
 
     companion object {
         fun getSimpleGrantedAuthoritiesFrom(authorities: MutableSet<Authority>): List<SimpleGrantedAuthority> {
-            return authorities.map { it.role.toString() }.map { SimpleGrantedAuthority(it) }
+            return authorities.map { it.id.toString() }.map { SimpleGrantedAuthority(it) }
         }
     }
 }
