@@ -1,6 +1,9 @@
 package com.sphirye.springtemplate.model
 
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotNull
 
 @Entity
 @Table(name = "_user")
@@ -9,10 +12,15 @@ class User(
     @GeneratedValue
     var id: Long? = null,
 
+    @field:NotNull
     var username: String? = null,
 
+    @field:NotNull
+    @field:Email
     var email: String? = null,
 
+    @field:NotNull
+    @field:Min(5)
     var password: String? = null,
 
     @ManyToMany(fetch = FetchType.EAGER)
