@@ -31,7 +31,6 @@ class SecurityConfig {
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
 
-            .cors { it.disable() }
             .csrf { it.disable() }
             .logout { it.disable() }
             .headers { it.frameOptions { frameOption -> frameOption.sameOrigin() } }
