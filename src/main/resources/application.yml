@@ -16,3 +16,7 @@ spring:
 app:
   jwt:
     secret-key: ${APP_JWT_SECRET_KEY}
+  security:
+    cors:
+      origins: ${APP_SECURITY_CORS_ORIGINS}
+      methods: GET, PUT, PATCH, DELETE, HEAD
